@@ -1,0 +1,5 @@
+eos-tour-extension (3.8.0) eos; urgency=medium
+
+  * Initial release of the Tour extension
+
+ -- Daniel Garcia Moreno <daniel@endlessm.com>  Wed, 27 May 2020 13:09:34 +0200

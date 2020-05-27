@@ -1,0 +1,8 @@
+{
+"uuid": "@uuid@",
+"name": "Tour",
+"description": "Interactive tutorials for gnome desktop",
+"settings-schema": "@settings_schema@",
+"shell-version": ["@shell_version@"],
+"url": "https://github.com/endlessm/eos-tour-extension"
+}

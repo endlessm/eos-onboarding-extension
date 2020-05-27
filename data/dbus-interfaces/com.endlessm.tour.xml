@@ -1,0 +1,23 @@
+<node>
+  <interface name="com.endlessm.tour">
+    <method name="HighlightRect">
+      <arg type="u" direction="in" name="x"/>
+      <arg type="u" direction="in" name="y"/>
+      <arg type="u" direction="in" name="width"/>
+      <arg type="u" direction="in" name="height"/>
+      <arg type="s" direction="in" name="text"/>
+      <arg type="b" direction="in" name="nextButton"/>
+    </method>
+
+    <method name="HighlightCircle">
+      <arg type="u" direction="in" name="x"/>
+      <arg type="u" direction="in" name="y"/>
+      <arg type="u" direction="in" name="radius"/>
+      <arg type="s" direction="in" name="text"/>
+      <arg type="b" direction="in" name="nextButton"/>
+    </method>
+
+    <property name="Skippable" type="b" access="readwrite"/>
+    <property name="Skip" type="b" access="read"/>
+  </interface>
+</node>

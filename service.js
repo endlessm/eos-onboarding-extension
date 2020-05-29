@@ -1,5 +1,6 @@
 /* exported skip, enable, disable */
 
+const Main = imports.ui.main;
 const { Gio, GLib, Shell } = imports.gi;
 const ShellDBus = imports.ui.shellDBus;
 
@@ -51,9 +52,17 @@ var Service = class {
     }
 
     HighlightWidgetAsync([className, text, nextButton], invocation) {
-        // TODO
-        log(`Widget (${className}) ${text}, ${nextButton}`);
-        invocation.return_value(null);
+        Highlight.widget(className, text, () => {
+            invocation.return_value(null);
+        });
+    }
+
+    ShowOverview(show) {
+        if (show) {
+            Main.overview.show();
+        } else {
+            Main.overview.hide();
+        }
     }
 
     skip() {

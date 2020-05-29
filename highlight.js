@@ -119,6 +119,31 @@ function _createText(x, y, width, height, text) {
     return label;
 }
 
+function _findWidget(root, className) {
+    let widgetClassName = '';
+    let widgetName = '';
+    if ('get_style_class_name' in root) {
+        widgetClassName = root.get_style_class_name();
+    }
+    if ('get_name' in root) {
+        widgetName = root.get_name();
+    }
+
+    if (widgetClassName === className || widgetName === className) {
+        return root;
+    }
+
+    for (const child of root.get_children()) {
+        const found = _findWidget(child, className);
+        if (found) {
+            return found;
+        }
+    }
+
+    return null;
+}
+
+
 // TODO: find a way to fix this, the captured event is not working correctly...
 function handleClick(x, y, width, height, callback) {
     const monitors = Main.layoutManager.monitors;
@@ -186,6 +211,21 @@ function circle(x, y, radius, text, callback) {
 
     draw();
     handleClick(x, y, width, width, callback);
+}
+
+function widget(className, text, callback) {
+    // Looking for a widget with this class name
+    const root = Main.layoutManager.uiGroup;
+    const w = _findWidget(root, className);
+
+    if (w) {
+        const [x, y] = w.get_transformed_position();
+        global.w = w;
+        const [width, height] = w.get_size();
+        rect(x, y, width, height, text, callback);
+    } else {
+        callback(false);
+    }
 }
 
 function button() {

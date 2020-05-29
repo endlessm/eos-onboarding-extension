@@ -24,6 +24,17 @@ function drawRectangle(x, y, width, height) {
     });
 }
 
+function drawWidget(className, text) {
+    return new Promise((resolve, reject) => {
+        const variant = new GLib.Variant('(ssb)', [className, text, false]);
+        proxy.call('HighlightWidget', variant, Gio.DBusCallFlags.NONE, 20000, null,
+            (proxy, res) => {
+                const [result] = proxy.call_finish(res).deep_unpack();
+                resolve(result);
+            });
+    });
+}
+
 function testInit() {
     const _loop = new GLib.MainLoop(null, false);
     proxy = new Gio.DBusProxy.new_for_bus_sync(
@@ -34,9 +45,12 @@ function testInit() {
         'com.endlessm.tour',
         null);
 
+    proxy.call('ShowOverview', new GLib.Variant('(b)', [true]), Gio.DBusCallFlags.NONE, -1, null, (proxy, res) => {});
     drawRectangle(1920 / 2 - 30, 5, 60, 20)
-        .then(drawCircle.bind(this, 800, 400, 50))
-        .then(drawRectangle.bind(this, 1000, 1040, 920, 40))
+        .then(drawCircle.bind(this, 1200, 400, 50))
+        .then(drawWidget.bind(this, 'workspace-thumbnails', 'Here you can change between virtual desktops'))
+        .then(drawWidget.bind(this, 'search-entry', 'You can find new applications or anything here'))
+        .then(drawWidget.bind(this, 'dash', 'Here you have your running applications'))
         .then(() => { _loop.quit() });
 
     _loop.run();

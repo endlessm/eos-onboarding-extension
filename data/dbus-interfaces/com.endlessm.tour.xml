@@ -17,6 +17,12 @@
       <arg type="b" direction="in" name="nextButton"/>
     </method>
 
+    <method name="HighlightWidget">
+      <arg type="s" direction="in" name="className"/>
+      <arg type="s" direction="in" name="text"/>
+      <arg type="b" direction="in" name="nextButton"/>
+    </method>
+
     <property name="Skippable" type="b" access="readwrite"/>
     <property name="Skip" type="b" access="read"/>
   </interface>

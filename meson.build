@@ -5,7 +5,9 @@ project('tour-extension',
 
 sources = [
   'extension.js',
+  'highlight.js',
   'service.js',
+  'utils.js',
 ]
 extra_sources = [
   'COPYING',

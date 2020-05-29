@@ -6,6 +6,7 @@ const ShellDBus = imports.ui.shellDBus;
 const ExtensionUtils = imports.misc.extensionUtils;
 const Tour = ExtensionUtils.getCurrentExtension();
 const Utils = Tour.imports.utils;
+const Highlight = Tour.imports.highlight;
 
 const IFACE = Utils.loadInterfaceXML('com.endlessm.tour');
 
@@ -37,15 +38,22 @@ var Service = class {
         }
     }
 
-    HighlightRect(x, y, width, height, text, nextButton) {
-        // TODO
-        // This should lock the interface until click on the rect or next button
-        console.log(`Rect (${x}, ${y}) ${width}x${height}, ${text}, ${nextButton}`);
+    HighlightRectAsync([x, y, width, height, text, nextButton], invocation) {
+        Highlight.rect(x, y, width, height, text, () => {
+            invocation.return_value(null);
+        });
     }
 
-    HighlightCircle(x, y, radius, text, nextButton) {
+    HighlightCircleAsync([x, y, radius, text, nextButton], invocation) {
+        Highlight.circle(x, y, radius, text, () => {
+            invocation.return_value(null);
+        });
+    }
+
+    HighlightWidgetAsync([className, text, nextButton], invocation) {
         // TODO
-        console.log(`Circle (${x}, ${y}) o ${radius}, ${text}, ${nextButton}`);
+        log(`Widget (${className}) ${text}, ${nextButton}`);
+        invocation.return_value(null);
     }
 
     skip() {

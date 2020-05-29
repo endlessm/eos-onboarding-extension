@@ -9,7 +9,7 @@ let clickEventHandler = null;
 
 const overlayColor = new Clutter.Color({red: 0, green: 0, blue: 0, alpha: 200});
 const borderColor = new Clutter.Color({red: 255, green: 120, blue: 0, alpha: 255});
-const border = 5;
+const border = 3;
 
 function _paintCircle(x, y, radius, area) {
     const cr = area.get_context();
@@ -20,14 +20,14 @@ function _paintCircle(x, y, radius, area) {
     cr.rectangle(0, 0, aw, ah);
     cr.fill();
     cr.setOperator(Cairo.Operator.CLEAR);
-    cr.arc(x, y, radius, 0, Math.PI * 2);
+    cr.arc(x, y, radius + border, 0, Math.PI * 2);
     cr.fill();
 
     cr.setOperator(Cairo.Operator.OVER);
 
     Clutter.cairo_set_source_color(cr, borderColor);
     cr.setLineWidth(border);
-    cr.arc(x, y, radius, 0, Math.PI * 2);
+    cr.arc(x, y, radius + border, 0, Math.PI * 2);
     cr.stroke();
 }
 
@@ -42,6 +42,7 @@ function _paintRect(x, y, x2, y2, area) {
 
     Clutter.cairo_set_source_color(cr, borderColor);
     cr.setLineWidth(border);
+    cr.setLineCap(Cairo.LineCap.SQUASH);
     cr.moveTo(x, y);
     cr.lineTo(x2, y2);
     cr.stroke();
@@ -143,12 +144,13 @@ function handleClick(x, y, width, height, callback) {
 
 function rect(x, y, width, height, text, callback) {
     clean();
+    const b2 = border / 2;
 
     const [topActor, rightActor, bottomActor, leftActor] = _createActors(x, y, width, height);
-    topActor.connect('repaint', _paintRect.bind(this, x, y, x + width, y));
-    bottomActor.connect('repaint', _paintRect.bind(this, x, 0, x + width, 0));
-    leftActor.connect('repaint', _paintRect.bind(this, x, 0, x, y + height));
-    rightActor.connect('repaint', _paintRect.bind(this, 0, 0, 0, y + height));
+    topActor.connect('repaint', _paintRect.bind(this, x - b2, y - b2, x + width + b2, y - b2));
+    bottomActor.connect('repaint', _paintRect.bind(this, x - b2, b2, x + width + b2, b2));
+    leftActor.connect('repaint', _paintRect.bind(this, x - b2, 0, x - b2, y + height));
+    rightActor.connect('repaint', _paintRect.bind(this, b2, 0, b2, y + height));
 
     Actors.push(topActor);
     Actors.push(bottomActor);

@@ -144,25 +144,21 @@ function _findWidget(root, className) {
 }
 
 
-// TODO: find a way to fix this, the captured event is not working correctly...
 function handleClick(x, y, width, height, callback) {
     const monitors = Main.layoutManager.monitors;
     const primary = Main.layoutManager.primaryIndex;
     const monitor = monitors[primary];
 
-    clickEventHandler = global.stage.connect('button-press-event', (actor, ev) => {
-        log('************** TOUR: button-press-event');
-        const [evx, evy] = ev.get_coords();
-        const point = new Graphene.Point({x: evx, y: evy});
-        const rect = new Graphene.Rect();
-        rect.size.width = width;
-        rect.size.height = height;
-        rect.origin.x = monitor.x + x;
-        rect.origin.y = monitor.y + y;
-        if (rect.contains_point(point)) {
-            clean();
-            callback(true);
-        }
+    const clickActor = new Clutter.Actor({ x, y, width, height, reactive: true });
+    Actors.push(clickActor);
+
+    clickActor.connect('button-press-event', (actor, ev) => {
+        clean();
+        callback(true);
+
+        const [stageX, stageY] = ev.get_coords();
+        const a = global.stage.get_actor_at_pos(Clutter.PickMode.REACTIVE, stageX, stageY);
+        a.event(ev.copy(), false);
         return Clutter.EVENT_PROPAGATE;
     });
 }
@@ -185,8 +181,8 @@ function rect(x, y, width, height, text, callback) {
     const textActor = _createText(x, y, width, height, text);
     Actors.push(textActor);
 
-    draw();
     handleClick(x, y, width, height, callback);
+    draw();
 }
 
 function circle(x, y, radius, text, callback) {
@@ -209,15 +205,14 @@ function circle(x, y, radius, text, callback) {
     const textActor = _createText(x, y, width, width, text);
     Actors.push(textActor);
 
-    draw();
     handleClick(x, y, width, width, callback);
+    draw();
 }
 
 function widget(className, text, callback) {
     // Looking for a widget with this class name
     const root = Main.layoutManager.uiGroup;
     const w = _findWidget(root, className);
-
     if (w) {
         const [x, y] = w.get_transformed_position();
         global.w = w;

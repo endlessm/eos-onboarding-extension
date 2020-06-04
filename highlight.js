@@ -109,11 +109,26 @@ function _createText(x, y, width, height, text) {
     const monitors = Main.layoutManager.monitors;
     const primary = Main.layoutManager.primaryIndex;
     const monitor = monitors[primary];
-    const label = new St.Label({ text: text, x: monitor.x + x });
-    if (y < monitor.height / 2) {
-        label.set_y(monitor.y + y + height + 20);
+    const label = new St.Label({ text: text });
+    const labelWidth = label.get_width();
+    const labelHeight = label.get_height();
+
+    // Wide rect, we'll show the text top or bottom
+    if (width > height) {
+        label.set_x(monitor.x + x + (width / 2) - (labelWidth / 2));
+        if (y < monitor.height / 2) {
+            label.set_y(monitor.y + y + height + 20);
+        } else {
+            label.set_y(monitor.y + y - 30);
+        }
+    // Left or right
     } else {
-        label.set_y(monitor.y + y - 30);
+        label.set_y(monitor.y + y + (height / 2) - (labelHeight / 2));
+        if (x < monitor.width / 2) {
+            label.set_x(monitor.x + x + width + 20);
+        } else {
+            label.set_x(monitor.x + x - labelWidth - 30);
+        }
     }
 
     return label;

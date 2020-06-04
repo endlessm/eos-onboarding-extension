@@ -68,6 +68,10 @@ var Service = class {
         }
     }
 
+    Clean() {
+        Highlight.clean();
+    }
+
     skip() {
         this._dbusImpl.emit_property_changed('Skip', new GLib.Variant('b', true));
     }

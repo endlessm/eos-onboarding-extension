@@ -1,4 +1,4 @@
-/* exported rect, circle, widget, text, button */
+/* exported rect, circle, widget, clean */
 
 const Main = imports.ui.main;
 const { Clutter, Cogl, GObject, Graphene, St } = imports.gi;

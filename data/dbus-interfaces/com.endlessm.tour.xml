@@ -30,6 +30,8 @@
       <arg type="b" direction="in" name="show"/>
     </method>
 
+    <method name="Clean" />
+
     <property name="Skippable" type="b" access="readwrite"/>
     <property name="Skip" type="b" access="read"/>
   </interface>

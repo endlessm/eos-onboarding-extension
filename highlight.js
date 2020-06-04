@@ -169,11 +169,10 @@ function _createSkipButton(callback) {
     return button;
 }
 
-function _createText(x, y, width, height, text) {
+function _reposText(x, y, width, height, label) {
     const monitors = Main.layoutManager.monitors;
     const primary = Main.layoutManager.primaryIndex;
     const monitor = monitors[primary];
-    const label = new St.Label({ text: text });
     const labelWidth = label.get_width();
     const labelHeight = label.get_height();
 
@@ -194,7 +193,10 @@ function _createText(x, y, width, height, text) {
             label.set_x(monitor.x + x - labelWidth - 30);
         }
     }
+}
 
+function _createText(text) {
+    const label = new St.Label({ text: text, x: 0, y: 0 });
     return label;
 }
 
@@ -257,8 +259,9 @@ function rect(x, y, width, height, text, skippable, callback) {
     Actors.push(leftActor);
     Actors.push(rightActor);
 
+    let textActor = null;
     if (text) {
-        const textActor = _createText(x, y, width, height, text);
+        textActor = _createText(text);
         Actors.push(textActor);
     }
 
@@ -273,6 +276,10 @@ function rect(x, y, width, height, text, skippable, callback) {
 
     if (skippable) {
         _reposSkipButton(x, y, width, height, skipButton);
+    }
+
+    if (text) {
+        _reposText(x, y, width, height, textActor);
     }
 }
 
@@ -293,8 +300,9 @@ function circle(x, y, radius, text, skippable, callback) {
     Actors.push(leftActor);
     Actors.push(rightActor);
 
+    let textActor = null;
     if (text) {
-        const textActor = _createText(x, y, width, width, text);
+        textActor = _createText(text);
         Actors.push(textActor);
     }
 
@@ -309,6 +317,10 @@ function circle(x, y, radius, text, skippable, callback) {
 
     if (skippable) {
         _reposSkipButton(x, y, width, width, skipButton);
+    }
+
+    if (text) {
+        _reposText(x, y, width, width, textActor);
     }
 }
 

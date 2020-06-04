@@ -225,7 +225,7 @@ function _findWidget(root, className) {
 }
 
 
-function handleClick(x, y, width, height, callback) {
+function handleClick(x, y, width, height, service, callback) {
     const monitors = Main.layoutManager.monitors;
     const primary = Main.layoutManager.primaryIndex;
     const monitor = monitors[primary];
@@ -237,14 +237,17 @@ function handleClick(x, y, width, height, callback) {
         clean();
         callback(false);
 
-        const [stageX, stageY] = ev.get_coords();
-        const a = global.stage.get_actor_at_pos(Clutter.PickMode.REACTIVE, stageX, stageY);
-        a.event(ev.copy(), false);
+        if (service.PropagateEvents) {
+            const [stageX, stageY] = ev.get_coords();
+            const a = global.stage.get_actor_at_pos(Clutter.PickMode.REACTIVE, stageX, stageY);
+            a.event(ev.copy(), false);
+        }
+
         return Clutter.EVENT_PROPAGATE;
     });
 }
 
-function rect(x, y, width, height, text, skippable, callback) {
+function rect(x, y, width, height, text, service, callback) {
     clean();
     const b2 = border / 2;
 
@@ -266,15 +269,15 @@ function rect(x, y, width, height, text, skippable, callback) {
     }
 
     let skipButton;
-    if (skippable) {
+    if (service.Skippable) {
         skipButton = _createSkipButton(callback);
         Actors.push(skipButton);
     }
 
-    handleClick(x, y, width, height, callback);
+    handleClick(x, y, width, height, service, callback);
     draw();
 
-    if (skippable) {
+    if (service.Skippable) {
         _reposSkipButton(x, y, width, height, skipButton);
     }
 
@@ -283,7 +286,7 @@ function rect(x, y, width, height, text, skippable, callback) {
     }
 }
 
-function circle(x, y, radius, text, skippable, callback) {
+function circle(x, y, radius, text, service, callback) {
     clean();
 
     const width = Math.sqrt(2 * radius * radius);
@@ -307,15 +310,15 @@ function circle(x, y, radius, text, skippable, callback) {
     }
 
     let skipButton;
-    if (skippable) {
+    if (service.Skippable) {
         skipButton = _createSkipButton(callback);
         Actors.push(skipButton);
     }
 
-    handleClick(x, y, width, width, callback);
+    handleClick(x, y, width, width, service, callback);
     draw();
 
-    if (skippable) {
+    if (service.Skippable) {
         _reposSkipButton(x, y, width, width, skipButton);
     }
 
@@ -324,7 +327,7 @@ function circle(x, y, radius, text, skippable, callback) {
     }
 }
 
-function widget(className, text, skippable, callback) {
+function widget(className, text, service, callback) {
     // Looking for a widget with this class name
     const root = Main.layoutManager.uiGroup;
     const w = _findWidget(root, className);
@@ -332,7 +335,7 @@ function widget(className, text, skippable, callback) {
         const [x, y] = w.get_transformed_position();
         global.w = w;
         const [width, height] = w.get_size();
-        rect(x, y, width, height, text, skippable, callback);
+        rect(x, y, width, height, text, service, callback);
     } else {
         callback(false);
     }

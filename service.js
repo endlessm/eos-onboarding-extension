@@ -13,6 +13,7 @@ const IFACE = Utils.loadInterfaceXML('com.endlessm.tour');
 
 var Service = class {
     constructor() {
+        this._propagateEvents = true;
         this._skippable = true;
         this._dbusImpl = Gio.DBusExportedObject.wrapJSObject(IFACE, this);
         this._nameId = Gio.bus_own_name_on_connection(Gio.DBus.session, 'com.endlessm.tour',
@@ -40,21 +41,21 @@ var Service = class {
     }
 
     HighlightRectAsync([x, y, width, height, text, nextButton], invocation) {
-        Highlight.rect(x, y, width, height, text, this._skippable, (ret) => {
+        Highlight.rect(x, y, width, height, text, this, (ret) => {
             const variant = new GLib.Variant('(b)', [ret]);
             invocation.return_value(variant);
         });
     }
 
     HighlightCircleAsync([x, y, radius, text, nextButton], invocation) {
-        Highlight.circle(x, y, radius, text, this._skippable, (ret) => {
+        Highlight.circle(x, y, radius, text, this, (ret) => {
             const variant = new GLib.Variant('(b)', [ret]);
             invocation.return_value(variant);
         });
     }
 
     HighlightWidgetAsync([className, text, nextButton], invocation) {
-        Highlight.widget(className, text, this._skippable, (ret) => {
+        Highlight.widget(className, text, this, (ret) => {
             const variant = new GLib.Variant('(b)', [ret]);
             invocation.return_value(variant);
         });
@@ -83,6 +84,15 @@ var Service = class {
     set Skippable(enabled) {
         this._skippable = enabled;
         this._dbusImpl.emit_property_changed('Skippable', new GLib.Variant('b', enabled));
+    }
+
+    get PropagateEvents() {
+        return this._propagateEvents;
+    }
+
+    set PropagateEvents(enabled) {
+        this._propagateEvents = enabled;
+        this._dbusImpl.emit_property_changed('PropagateEvents', new GLib.Variant('b', enabled));
     }
 };
 

@@ -8,6 +8,9 @@ function drawCircle(x, y, radius) {
         proxy.call('HighlightCircle', variant, Gio.DBusCallFlags.NONE, 20000, null,
             (proxy, res) => {
                 const [result] = proxy.call_finish(res).deep_unpack();
+                if (result) {
+                    reject(result);
+                }
                 resolve(result);
             });
     });
@@ -19,6 +22,9 @@ function drawRectangle(x, y, width, height) {
         proxy.call('HighlightRect', variant, Gio.DBusCallFlags.NONE, 20000, null,
             (proxy, res) => {
                 const [result] = proxy.call_finish(res).deep_unpack();
+                if (result) {
+                    reject(result);
+                }
                 resolve(result);
             });
     });
@@ -30,6 +36,9 @@ function drawWidget(className, text) {
         proxy.call('HighlightWidget', variant, Gio.DBusCallFlags.NONE, 20000, null,
             (proxy, res) => {
                 const [result] = proxy.call_finish(res).deep_unpack();
+                if (result) {
+                    reject(result);
+                }
                 resolve(result);
             });
     });
@@ -51,7 +60,7 @@ function testInit() {
         .then(drawWidget.bind(this, 'workspace-thumbnails', 'Here you can change between virtual desktops'))
         .then(drawWidget.bind(this, 'search-entry', 'You can find new applications or anything here'))
         .then(drawWidget.bind(this, 'dash', 'Here you have your running applications'))
-        .then(() => { _loop.quit() });
+        .finally(() => { _loop.quit() });
 
     _loop.run();
 }

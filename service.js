@@ -40,20 +40,23 @@ var Service = class {
     }
 
     HighlightRectAsync([x, y, width, height, text, nextButton], invocation) {
-        Highlight.rect(x, y, width, height, text, () => {
-            invocation.return_value(null);
+        Highlight.rect(x, y, width, height, text, this._skippable, (ret) => {
+            const variant = new GLib.Variant('(b)', [ret]);
+            invocation.return_value(variant);
         });
     }
 
     HighlightCircleAsync([x, y, radius, text, nextButton], invocation) {
-        Highlight.circle(x, y, radius, text, () => {
-            invocation.return_value(null);
+        Highlight.circle(x, y, radius, text, this._skippable, (ret) => {
+            const variant = new GLib.Variant('(b)', [ret]);
+            invocation.return_value(variant);
         });
     }
 
     HighlightWidgetAsync([className, text, nextButton], invocation) {
-        Highlight.widget(className, text, () => {
-            invocation.return_value(null);
+        Highlight.widget(className, text, this._skippable, (ret) => {
+            const variant = new GLib.Variant('(b)', [ret]);
+            invocation.return_value(variant);
         });
     }
 

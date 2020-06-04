@@ -105,6 +105,70 @@ function _createActors(x, y, width, height) {
     return [topActor, rightActor, bottomActor, leftActor];
 }
 
+function _reposSkipButton(x, y, width, height, button) {
+    const monitors = Main.layoutManager.monitors;
+    const primary = Main.layoutManager.primaryIndex;
+    const monitor = monitors[primary];
+
+    const bottom = monitor.y + monitor.height;
+    const right = monitor.x + monitor.width;
+    const top = monitor.y;
+    const left = monitor.x;
+    const margin = 30;
+
+    // Bottom Right by default
+    button.set_x(right - button.get_width() - margin);
+    button.set_y(bottom - button.get_height() - margin);
+
+    const highRect = new Graphene.Rect();
+    const buttonRect = new Graphene.Rect();
+
+    highRect.origin.x = x;
+    highRect.origin.y = y;
+    highRect.size.width = width;
+    highRect.size.height = height;
+
+    buttonRect.origin.x = button.x;
+    buttonRect.origin.y = button.y;
+    buttonRect.size.width = button.width;
+    buttonRect.size.height = button.height;
+
+    let [intersection] = buttonRect.intersection(highRect);
+    // Top right
+    if (intersection) {
+        button.set_y(top + margin);
+        buttonRect.origin.y = top + margin;
+        [intersection] = buttonRect.intersection(highRect);
+        // Top left
+        if (intersection) {
+            button.set_x(left + margin);
+            buttonRect.origin.x = left + margin;
+            [intersection] = buttonRect.intersection(highRect);
+            // Bottom left
+            if (intersection) {
+                button.set_y(bottom - button.get_height() - margin);
+            }
+        }
+    }
+}
+
+function _createSkipButton(callback) {
+    const button = new St.Button({
+        label: 'Skip',
+        reactive: true,
+        x: 0,
+        y: 0,
+        style_class: 'modal-dialog-button button',
+    });
+
+    button.connect('clicked', () => {
+        clean();
+        callback(true);
+    });
+
+    return button;
+}
+
 function _createText(x, y, width, height, text) {
     const monitors = Main.layoutManager.monitors;
     const primary = Main.layoutManager.primaryIndex;
@@ -169,7 +233,7 @@ function handleClick(x, y, width, height, callback) {
 
     clickActor.connect('button-press-event', (actor, ev) => {
         clean();
-        callback(true);
+        callback(false);
 
         const [stageX, stageY] = ev.get_coords();
         const a = global.stage.get_actor_at_pos(Clutter.PickMode.REACTIVE, stageX, stageY);
@@ -178,7 +242,7 @@ function handleClick(x, y, width, height, callback) {
     });
 }
 
-function rect(x, y, width, height, text, callback) {
+function rect(x, y, width, height, text, skippable, callback) {
     clean();
     const b2 = border / 2;
 
@@ -198,11 +262,21 @@ function rect(x, y, width, height, text, callback) {
         Actors.push(textActor);
     }
 
+    let skipButton;
+    if (skippable) {
+        skipButton = _createSkipButton(callback);
+        Actors.push(skipButton);
+    }
+
     handleClick(x, y, width, height, callback);
     draw();
+
+    if (skippable) {
+        _reposSkipButton(x, y, width, height, skipButton);
+    }
 }
 
-function circle(x, y, radius, text, callback) {
+function circle(x, y, radius, text, skippable, callback) {
     clean();
 
     const width = Math.sqrt(2 * radius * radius);
@@ -224,11 +298,21 @@ function circle(x, y, radius, text, callback) {
         Actors.push(textActor);
     }
 
+    let skipButton;
+    if (skippable) {
+        skipButton = _createSkipButton(callback);
+        Actors.push(skipButton);
+    }
+
     handleClick(x, y, width, width, callback);
     draw();
+
+    if (skippable) {
+        _reposSkipButton(x, y, width, width, skipButton);
+    }
 }
 
-function widget(className, text, callback) {
+function widget(className, text, skippable, callback) {
     // Looking for a widget with this class name
     const root = Main.layoutManager.uiGroup;
     const w = _findWidget(root, className);
@@ -236,12 +320,8 @@ function widget(className, text, callback) {
         const [x, y] = w.get_transformed_position();
         global.w = w;
         const [width, height] = w.get_size();
-        rect(x, y, width, height, text, callback);
+        rect(x, y, width, height, text, skippable, callback);
     } else {
         callback(false);
     }
-}
-
-function button() {
-    // TODO
 }

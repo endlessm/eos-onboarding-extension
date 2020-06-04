@@ -193,8 +193,10 @@ function rect(x, y, width, height, text, callback) {
     Actors.push(leftActor);
     Actors.push(rightActor);
 
-    const textActor = _createText(x, y, width, height, text);
-    Actors.push(textActor);
+    if (text) {
+        const textActor = _createText(x, y, width, height, text);
+        Actors.push(textActor);
+    }
 
     handleClick(x, y, width, height, callback);
     draw();
@@ -217,8 +219,10 @@ function circle(x, y, radius, text, callback) {
     Actors.push(leftActor);
     Actors.push(rightActor);
 
-    const textActor = _createText(x, y, width, width, text);
-    Actors.push(textActor);
+    if (text) {
+        const textActor = _createText(x, y, width, width, text);
+        Actors.push(textActor);
+    }
 
     handleClick(x, y, width, width, callback);
     draw();

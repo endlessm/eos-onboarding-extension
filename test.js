@@ -4,7 +4,7 @@ let proxy = null;
 
 function drawCircle(x, y, radius) {
     return new Promise((resolve, reject) => {
-        const variant = new GLib.Variant('(uuusb)', [x, y, radius, 'This is a circle', false]);
+        const variant = new GLib.Variant('(uuus)', [x, y, radius, 'This is a circle']);
         proxy.call('HighlightCircle', variant, Gio.DBusCallFlags.NONE, 20000, null,
             (proxy, res) => {
                 const [result] = proxy.call_finish(res).deep_unpack();
@@ -18,7 +18,7 @@ function drawCircle(x, y, radius) {
 
 function drawRectangle(x, y, width, height) {
     return new Promise((resolve, reject) => {
-        const variant = new GLib.Variant('(uuuusb)', [x, y, width, height, 'This is a rectangle', false]);
+        const variant = new GLib.Variant('(uuuus)', [x, y, width, height, 'This is a rectangle']);
         proxy.call('HighlightRect', variant, Gio.DBusCallFlags.NONE, 20000, null,
             (proxy, res) => {
                 const [result] = proxy.call_finish(res).deep_unpack();
@@ -32,7 +32,7 @@ function drawRectangle(x, y, width, height) {
 
 function drawWidget(className, text) {
     return new Promise((resolve, reject) => {
-        const variant = new GLib.Variant('(ssb)', [className, text, false]);
+        const variant = new GLib.Variant('(ss)', [className, text]);
         proxy.call('HighlightWidget', variant, Gio.DBusCallFlags.NONE, 20000, null,
             (proxy, res) => {
                 const [result] = proxy.call_finish(res).deep_unpack();

@@ -6,7 +6,6 @@
       <arg type="u" direction="in" name="width"/>
       <arg type="u" direction="in" name="height"/>
       <arg type="s" direction="in" name="text"/>
-      <arg type="b" direction="in" name="nextButton"/>
       <arg type="b" direction="out" name="skipped"/>
     </method>
 
@@ -15,14 +14,12 @@
       <arg type="u" direction="in" name="y"/>
       <arg type="u" direction="in" name="radius"/>
       <arg type="s" direction="in" name="text"/>
-      <arg type="b" direction="in" name="nextButton"/>
       <arg type="b" direction="out" name="skipped"/>
     </method>
 
     <method name="HighlightWidget">
       <arg type="s" direction="in" name="className"/>
       <arg type="s" direction="in" name="text"/>
-      <arg type="b" direction="in" name="nextButton"/>
       <arg type="b" direction="out" name="skipped"/>
     </method>
 

@@ -61,11 +61,12 @@ var Service = class {
         });
     }
 
-    ShowOverview(show) {
-        if (show) {
-            Main.overview.show();
-        } else {
-            Main.overview.hide();
+    Overview(method) {
+        // Overview method, this could be used to show/hide the overview with
+        // the toggle method or to show the desktop on EOS with showApps
+        const fn = Main.overview[method];
+        if (fn) {
+            fn.bind(Main.overview)();
         }
     }
 

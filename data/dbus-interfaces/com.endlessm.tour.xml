@@ -23,8 +23,8 @@
       <arg type="b" direction="out" name="skipped"/>
     </method>
 
-    <method name="ShowOverview">
-      <arg type="b" direction="in" name="show"/>
+    <method name="Overview">
+      <arg type="s" direction="in" name="method"/>
     </method>
 
     <method name="Clean" />

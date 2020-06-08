@@ -74,7 +74,7 @@ function testInit() {
         'com.endlessm.tour',
         null);
 
-    proxy.call('ShowOverview', new GLib.Variant('(b)', [true]), Gio.DBusCallFlags.NONE, -1, null, (proxy, res) => {});
+    proxy.call('Overview', new GLib.Variant('(s)', ['show']), Gio.DBusCallFlags.NONE, -1, null, (proxy, res) => {});
     drawRectangle(1920 / 2 - 30, 5, 60, 20)
         .then(changeProp.bind(this, 'Skippable', false))
         .then(changeProp.bind(this, 'PropagateEvents', false))

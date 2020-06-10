@@ -61,7 +61,7 @@ function clean() {
 
 function draw() {
     Actors.forEach((a) => {
-        Main.layoutManager.addTopChrome(a);
+        Main.layoutManager.addChrome(a);
         a.show();
     });
 }

@@ -203,14 +203,24 @@ function _createText(text) {
 function _findWidget(root, className) {
     let widgetClassName = '';
     let widgetName = '';
+    let labelActorText = '';
+
     if ('get_style_class_name' in root) {
         widgetClassName = root.get_style_class_name();
     }
     if ('get_name' in root) {
         widgetName = root.get_name();
     }
+    if ('get_label_actor' in root) {
+        const labelActor = root.get_label_actor();
+        if (labelActor) {
+            labelActorText = root.get_label_actor().get_text();
+        }
+    }
 
-    if (widgetClassName === className || widgetName === className) {
+    if (widgetClassName === className
+        || widgetName === className
+        || labelActorText === className) {
         return root;
     }
 

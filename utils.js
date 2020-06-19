@@ -1,10 +1,9 @@
 /* exported loadInterfaceXML, gettext */
 
 const { Gio } = imports.gi;
-const Gettext = imports.gettext;
+const Gettext = imports.gettext.domain('tour-extension');;
 const Extension = imports.misc.extensionUtils.getCurrentExtension();
 
-Gettext.textdomain('tour-extension')
 var gettext = Gettext.gettext;
 
 function loadInterfaceXML(iface) {

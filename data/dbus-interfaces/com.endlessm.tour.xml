@@ -23,6 +23,14 @@
       <arg type="b" direction="out" name="skipped"/>
     </method>
 
+    <method name="HighlightFuzzy">
+      <arg type="s" direction="in" name="position"/>
+      <arg type="s" direction="in" name="size"/>
+      <arg type="s" direction="in" name="shape"/>
+      <arg type="s" direction="in" name="text"/>
+      <arg type="b" direction="out" name="skipped"/>
+    </method>
+
     <method name="Overview">
       <arg type="s" direction="in" name="method"/>
     </method>

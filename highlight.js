@@ -18,7 +18,7 @@
  * with this program; if not, write to the Free Software Foundation, Inc.,
  * 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
  */
-/* exported rect, circle, widget, clean */
+/* exported rect, circle, widget, clean, fuzzy */
 
 const Main = imports.ui.main;
 const { Clutter, Cogl, GObject, Graphene, St } = imports.gi;
@@ -91,8 +91,6 @@ function _createActors(x, y, width, height) {
     const primary = Main.layoutManager.primaryIndex;
     const monitor = monitors[primary];
 
-    // Four panels to create an empty space just in the Highlight rectangle
-    const bgColor = new Clutter.Color({red: 0, green: 0, blue: 0, alpha: 120});
     const topActor = new St.DrawingArea({
         x: monitor.x,
         y: monitor.y,
@@ -260,7 +258,10 @@ function handleClick(x, y, width, height, service, callback) {
     const primary = Main.layoutManager.primaryIndex;
     const monitor = monitors[primary];
 
-    const clickActor = new Clutter.Actor({ x, y, width, height, reactive: true });
+    const mx = monitor.x + x;
+    const my = monitor.y + y;
+
+    const clickActor = new Clutter.Actor({ x: mx, y: my, width, height, reactive: true });
     Actors.push(clickActor);
 
     clickActor.connect('button-press-event', (actor, ev) => {
@@ -368,5 +369,172 @@ function widget(className, text, service, callback) {
         rect(x, y, width, height, text, service, callback);
     } else {
         callback(false);
+    }
+}
+
+class FuzzyParser {
+    constructor() {
+        this._numberRe = '((\\d+)(%|px))';
+        this._yaxisRe = `(top|center|bottom|${this._numberRe})`;
+        this._xaxisRe = `(left|center|right|${this._numberRe})`;
+        this._ARRe = '((\\d+):(\\d+))';
+
+        this.number = () => new RegExp(this._numberRe);
+        this.yaxis = () => new RegExp(this._yaxisRe);
+        this.xaxis = () => new RegExp(this._xaxisRe);
+        this.pos = () => new RegExp(this._posRe);
+        this.ar = () => new RegExp(this._ARRe);
+    }
+
+    applyAr(width, ar) {
+        let [, w, h] = ar.match(this.ar());
+        w = parseInt(w, 10);
+        h = parseInt(w, 10);
+        return width / (w / h);
+    }
+
+    parseNumber(n, total = 100) {
+        const [, , number, suffix] = n.match(this.number());
+
+        if (suffix === 'px') {
+            return parseInt(number, 10);
+        }
+
+        // calculate the number using the total variable as total and number as a
+        // percentage
+        return parseInt(number, 10) * total / 100;
+    }
+
+    parseXaxis(xaxis, width) {
+        const monitors = Main.layoutManager.monitors;
+        const primary = Main.layoutManager.primaryIndex;
+        const monitor = monitors[primary];
+
+        switch (xaxis) {
+            case 'left':
+                return 0;
+            case 'right':
+                return monitor.width - width;
+            case 'center':
+                return monitor.width / 2 - width / 2;
+            default:
+                return this.parseNumber(xaxis, monitor.width);
+        }
+    }
+
+    parseYaxis(yaxis, height) {
+        const monitors = Main.layoutManager.monitors;
+        const primary = Main.layoutManager.primaryIndex;
+        const monitor = monitors[primary];
+
+        switch (yaxis) {
+            case 'top':
+                return monitor.y;
+            case 'bottom':
+                return monitor.height - height;
+            case 'center':
+                return monitor.height / 2 - height / 2;
+            default:
+                return this.parseNumber(yaxis, monitor.height);
+        }
+    }
+
+    parsePos(pos, width, height) {
+        let match = null;
+
+        match = pos.match(new RegExp(`${this._yaxisRe} ${this._xaxisRe}`));
+        if (match) {
+            const [yaxis, xaxis] = match[0].split(' ');
+            return [this.parseXaxis(xaxis, width), this.parseYaxis(yaxis, height)];
+        }
+
+        match = pos.match(this.yaxis());
+        if (match) {
+            return [this.parseXaxis('center', width), this.parseYaxis(match[0], height)];
+        }
+
+        match = pos.match(this.xaxis());
+        if (match) {
+            return [this.parseXaxis(match[0], width), this.parseYaxis('center', height)];
+        }
+
+        return [0, 0];
+    }
+
+    parseSize(size) {
+        const monitors = Main.layoutManager.monitors;
+        const primary = Main.layoutManager.primaryIndex;
+        const monitor = monitors[primary];
+        let match = null;
+
+        let regex = new RegExp(`${this._numberRe} ${this._numberRe}`);
+        match = size.match(new RegExp(`${this._numberRe} ${this._numberRe}`));
+        if (match) {
+            const [width, height] = match[0].split(' ');
+            return [
+                this.parseNumber(width, monitor.width),
+                this.parseNumber(height, monitor.height),
+            ];
+        }
+
+        match = size.match(new RegExp(`${this._numberRe} ${this._ARRe}`));
+        if (match) {
+            const [width, ar] = match[0].split(' ');
+            const finalWidth = this.parseNumber(width, monitor.width);
+            const finalHeight = this.applyAr(finalWidth, ar);
+            return [finalWidth, finalHeight];
+        }
+
+        match = size.match(this.number());
+        if (match) {
+            const width = this.parseNumber(match[0], monitor.width);
+            return [width, width];
+        }
+
+        return [0, 0];
+    }
+};
+
+const fuzzyParser = new FuzzyParser();
+
+function fuzzy(position, size, shape, text, service, callback) {
+    /**
+     * The fuzzy function takes fuzzy position and size description and
+     * translates that to screen pixels
+     *
+     * position: "y-axis x-axis|y-axis|x-axis"
+     * size: "width height|width w:h|width"
+     * shape: "rect|circle"
+     *
+     * y-axis: "top|center|bottom|N%|Npx"
+     * x-axis: "left|center|right|N%|Npx"
+     *
+     * width, height: "N%|Npx"
+     */
+
+    const monitors = Main.layoutManager.monitors;
+    const primary = Main.layoutManager.primaryIndex;
+    const monitor = monitors[primary];
+
+    const [width, height] = fuzzyParser.parseSize(size);
+    let [x, y] = fuzzyParser.parsePos(position, width, height);
+
+    if (x === 0) {
+        x += border;
+    }
+    if (x + width === monitor.width) {
+        x -= border;
+    }
+    if (y === 0) {
+        y += border;
+    }
+    if (y + height === monitor.height) {
+        y -= border;
+    }
+
+    if (shape === 'circle') {
+        circle(x, y, width / 2.0, text, service, callback);
+    } else {
+        rect(x, y, width, height, text, service, callback);
     }
 }

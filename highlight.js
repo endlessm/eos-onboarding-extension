@@ -387,9 +387,9 @@ class FuzzyParser {
     }
 
     applyAr(width, ar) {
-        let [, w, h] = ar.match(this.ar());
+        let [, , w, h] = ar.match(this.ar());
         w = parseInt(w, 10);
-        h = parseInt(w, 10);
+        h = parseInt(h, 10);
         return width / (w / h);
     }
 

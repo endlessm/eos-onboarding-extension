@@ -1,8 +1,8 @@
 {
 "uuid": "@uuid@",
-"name": "Tour",
+"name": "Onbarding",
 "description": "Interactive tutorials for gnome desktop",
 "settings-schema": "@settings_schema@",
 "shell-version": ["@shell_version@"],
-"url": "https://github.com/endlessm/eos-tour-extension"
+"url": "https://github.com/endlessm/eos-onbarding-extension"
 }

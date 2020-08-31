@@ -1,5 +1,5 @@
-eos-tour-extension (0.1) eos; urgency=medium
+eos-onboarding-extension (0.1) eos; urgency=medium
 
-  * Initial release of the Tour extension
+  * Initial release of the Onboarding extension
 
  -- Daniel Garcia Moreno <daniel@endlessm.com>  Wed, 27 May 2020 13:09:34 +0200

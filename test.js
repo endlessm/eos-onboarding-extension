@@ -1,8 +1,8 @@
 /*
  * Copyright © 2020 Endless OS LLC.
  *
- * This file is part of eos-tour-extension
- * (see https://github.com/endlessm/eos-tour-extension).
+ * This file is part of eos-onboarding-extension
+ * (see https://github.com/endlessm/eos-onboarding-extension).
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -68,13 +68,13 @@ function changeProp(prop, value) {
     const propProxy = new Gio.DBusProxy.new_for_bus_sync(
         Gio.BusType.SESSION,
         0, null,
-        'com.endlessm.tour',
-        '/com/endlessm/tour',
+        'com.endlessm.onboarding',
+        '/com/endlessm/onboarding',
         'org.freedesktop.DBus.Properties',
         null);
 
     const variant = new GLib.Variant('(ssv)',
-        ['com.endlessm.tour', prop, new GLib.Variant('b', value)]);
+        ['com.endlessm.onboarding', prop, new GLib.Variant('b', value)]);
 
     return new Promise((resolve, reject) => {
         propProxy.call('Set', variant, Gio.DBusCallFlags.NONE, -1, null, (proxy, res) => {
@@ -89,9 +89,9 @@ function testInit() {
     proxy = new Gio.DBusProxy.new_for_bus_sync(
         Gio.BusType.SESSION,
         0, null,
-        'com.endlessm.tour',
-        '/com/endlessm/tour',
-        'com.endlessm.tour',
+        'com.endlessm.onboarding',
+        '/com/endlessm/onboarding',
+        'com.endlessm.onboarding',
         null);
 
     proxy.call('Overview', new GLib.Variant('(s)', ['show']), Gio.DBusCallFlags.NONE, -1, null, (proxy, res) => {});

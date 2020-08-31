@@ -16,11 +16,11 @@ If you want to add a new language you should update the file
 To generate .pot files you should run:
 
 ```
-ninja -C _build tour-extension-pot
+ninja -C _build onboarding-extension-pot
 ```
 
 To generate .po files you should run:
 
 ```
-ninja -C _build tour-extension-update-po
+ninja -C _build onboarding-extension-update-po
 ```

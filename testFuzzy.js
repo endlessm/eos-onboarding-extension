@@ -1,8 +1,8 @@
 /*
  * Copyright © 2020 Endless OS LLC.
  *
- * This file is part of eos-tour-extension
- * (see https://github.com/endlessm/eos-tour-extension).
+ * This file is part of eos-onboarding-extension
+ * (see https://github.com/endlessm/eos-onboarding-extension).
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -44,9 +44,9 @@ function testInit() {
     proxy = new Gio.DBusProxy.new_for_bus_sync(
         Gio.BusType.SESSION,
         0, null,
-        'com.endlessm.tour',
-        '/com/endlessm/tour',
-        'com.endlessm.tour',
+        'com.endlessm.onboarding',
+        '/com/endlessm/onboarding',
+        'com.endlessm.onboarding',
         null);
 
     drawFuzzy('top left', '20% 10%', 'rect')

@@ -1,8 +1,8 @@
 /*
  * Copyright © 2020 Endless OS LLC.
  *
- * This file is part of eos-tour-extension
- * (see https://github.com/endlessm/eos-tour-extension).
+ * This file is part of eos-onboarding-extension
+ * (see https://github.com/endlessm/eos-onboarding-extension).
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -25,24 +25,24 @@ const { Gio, GLib, Shell } = imports.gi;
 const ShellDBus = imports.ui.shellDBus;
 
 const ExtensionUtils = imports.misc.extensionUtils;
-const Tour = ExtensionUtils.getCurrentExtension();
-const Utils = Tour.imports.utils;
-const Highlight = Tour.imports.highlight;
+const Onboarding = ExtensionUtils.getCurrentExtension();
+const Utils = Onboarding.imports.utils;
+const Highlight = Onboarding.imports.highlight;
 
-const IFACE = Utils.loadInterfaceXML('com.endlessm.tour');
+const IFACE = Utils.loadInterfaceXML('com.endlessm.onboarding');
 
 var Service = class {
     constructor() {
         this._propagateEvents = true;
         this._skippable = true;
         this._dbusImpl = Gio.DBusExportedObject.wrapJSObject(IFACE, this);
-        this._nameId = Gio.bus_own_name_on_connection(Gio.DBus.session, 'com.endlessm.tour',
+        this._nameId = Gio.bus_own_name_on_connection(Gio.DBus.session, 'com.endlessm.onboarding',
             Gio.BusNameOwnerFlags.REPLACE, null, null);
 
         try {
-            this._dbusImpl.export(Gio.DBus.session, '/com/endlessm/tour');
+            this._dbusImpl.export(Gio.DBus.session, '/com/endlessm/onboarding');
         } catch (e) {
-            logError(e, 'Cannot export Tour service');
+            logError(e, 'Cannot export Onboarding service');
             return;
         }
     }
@@ -51,7 +51,7 @@ var Service = class {
         try {
             this._dbusImpl.unexport();
         } catch (e) {
-            logError(e, 'Cannot unexport Tour service');
+            logError(e, 'Cannot unexport Onboarding service');
         }
 
         if (this._nameId != 0) {

@@ -1,8 +1,8 @@
 /*
  * Copyright © 2020 Endless OS LLC.
  *
- * This file is part of eos-tour-extension
- * (see https://github.com/endlessm/eos-tour-extension).
+ * This file is part of eos-onboarding-extension
+ * (see https://github.com/endlessm/eos-onboarding-extension).
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -21,7 +21,7 @@
 /* exported loadInterfaceXML, gettext */
 
 const { Gio } = imports.gi;
-const Gettext = imports.gettext.domain('tour-extension');;
+const Gettext = imports.gettext.domain('onboarding-extension');;
 const Extension = imports.misc.extensionUtils.getCurrentExtension();
 
 var gettext = Gettext.gettext;

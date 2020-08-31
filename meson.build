@@ -1,4 +1,4 @@
-project('tour-extension',
+project('onboarding-extension',
   version: '3.8.0',
   meson_version: '>= 0.40.0'
 )
@@ -16,7 +16,7 @@ extra_sources = [
 i18n = import('i18n')
 subdir('po')
 
-uuid = 'eos-tour@endlessm.com'
+uuid = 'eos-onboarding@endlessm.com'
 
 ver_arr = meson.project_version().split('.')
 if ver_arr[1].to_int().is_even()

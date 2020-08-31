@@ -1,4 +1,4 @@
-Source: eos-tour-extension
+Source: eos-onboarding-extension
 Section: gnome
 Priority: optional
 Maintainer: Daniel Garcia Moreno <daniel@endlessm.com>
@@ -9,14 +9,14 @@ Build-Depends:
  debhelper-compat (= 12),
  meson (>= 0.40.0)
 Standards-Version: 4.4.0
-Homepage: https://github.com/endlessm/eos-tour-extension
-Vcs-Browser: https://github.com/endlessm/eos-tour-extension
-Vcs-Git: https://github.com/endlessm/eos-tour-extension.git
+Homepage: https://github.com/endlessm/eos-onboarding-extension
+Vcs-Browser: https://github.com/endlessm/eos-onboarding-extension
+Vcs-Git: https://github.com/endlessm/eos-onboarding-extension.git
 
-Package: eos-tour-extension
+Package: eos-onboarding-extension
 Architecture: all
 Depends:
  gnome-shell (>= 3.35),
  ${shlibs:Depends},
  ${misc:Depends}
-Description: Endless OS Tour extension for GNOME Shell
+Description: Endless OS onboarding extension for GNOME Shell

@@ -1,6 +1,6 @@
 Format: https://www.debian.org/doc/packaging-manuals/copyright-format/1.0/
-Upstream-Name: Endless OS Tour Extension
-Source: https://github.com/endlessm/eos-tour-extension
+Upstream-Name: Endless OS Onboarding Extension
+Source: https://github.com/endlessm/eos-onboarding-extension
 
 Files: *
 Copyright: 2020 Daniel Garcia Moreno <daniel@endlessm.com>

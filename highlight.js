@@ -18,7 +18,7 @@
  * with this program; if not, write to the Free Software Foundation, Inc.,
  * 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
  */
-/* exported rect, circle, widget, clean, fuzzy */
+/* exported rect, circle, widget, icon, clean, fuzzy */
 
 const Main = imports.ui.main;
 const { Clutter, Cogl, GObject, Graphene, St } = imports.gi;
@@ -370,6 +370,24 @@ function widget(className, text, service, callback) {
     } else {
         callback(false);
     }
+}
+
+function icon(appId, text, service, callback) {
+    Main.overview.viewSelector.showApps();
+    // Looking for an icon with this app or name
+    const id = `${appId}.desktop`;
+    const [page, pos] = Main.overview.viewSelector.appDisplay._pageManager.getAppPosition(id);
+    if (page < 0) {
+        callback(false);
+        return;
+    }
+
+    Main.overview.viewSelector.appDisplay.goToPage(page, false);
+    const item = Main.overview.viewSelector.appDisplay._grid.getItemAt(page, pos);
+    const [x, y] = item.get_transformed_position();
+    const [width, height] = item.get_transformed_size();
+    rect(x, y, width, height, text, service, callback);
+
 }
 
 class FuzzyParser {

@@ -81,6 +81,13 @@ var Service = class {
         });
     }
 
+    HighlightDesktopIconAsync([appId, text], invocation) {
+        Highlight.icon(appId, text, this, (ret) => {
+            const variant = new GLib.Variant('(b)', [ret]);
+            invocation.return_value(variant);
+        });
+    }
+
     HighlightFuzzyAsync([position, size, shape, text], invocation) {
         Highlight.fuzzy(position, size, shape, text, this, (ret) => {
             const variant = new GLib.Variant('(b)', [ret]);

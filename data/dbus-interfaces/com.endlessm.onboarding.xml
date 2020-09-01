@@ -23,6 +23,12 @@
       <arg type="b" direction="out" name="skipped"/>
     </method>
 
+    <method name="HighlightDesktopIcon">
+      <arg type="s" direction="in" name="appId"/>
+      <arg type="s" direction="in" name="text"/>
+      <arg type="b" direction="out" name="skipped"/>
+    </method>
+
     <method name="HighlightFuzzy">
       <arg type="s" direction="in" name="position"/>
       <arg type="s" direction="in" name="size"/>

@@ -64,6 +64,20 @@ function drawWidget(className, text) {
     });
 }
 
+function drawIcon(app, text) {
+    return new Promise((resolve, reject) => {
+        const variant = new GLib.Variant('(ss)', [app, text]);
+        proxy.call('HighlightDesktopIcon', variant, Gio.DBusCallFlags.NONE, 20000, null,
+            (proxy, res) => {
+                const [result] = proxy.call_finish(res).deep_unpack();
+                if (result) {
+                    reject(result);
+                }
+                resolve(result);
+            });
+    });
+}
+
 function changeProp(prop, value) {
     const propProxy = new Gio.DBusProxy.new_for_bus_sync(
         Gio.BusType.SESSION,
@@ -96,6 +110,7 @@ function testInit() {
 
     proxy.call('Overview', new GLib.Variant('(s)', ['show']), Gio.DBusCallFlags.NONE, -1, null, (proxy, res) => {});
     drawRectangle(1920 / 2 - 30, 5, 60, 20)
+        .then(drawIcon.bind(this, 'org.gnome.Software', 'The gnome apps store'))
         .then(changeProp.bind(this, 'Skippable', false))
         .then(changeProp.bind(this, 'PropagateEvents', false))
         .then(drawCircle.bind(this, 1200, 400, 50))

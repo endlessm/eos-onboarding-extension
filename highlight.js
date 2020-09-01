@@ -26,6 +26,7 @@ const Cairo = imports.cairo;
 
 const Actors = [];
 let clickEventHandler = null;
+let windowHandler = null;
 
 const overlayColor = new Clutter.Color({red: 0, green: 0, blue: 0, alpha: 200});
 const borderColor = new Clutter.Color({red: 255, green: 120, blue: 0, alpha: 255});
@@ -77,13 +78,59 @@ function clean() {
         global.stage.disconnect(clickEventHandler);
         clickEventHandler = null;
     }
+
+    if (windowHandler) {
+        global.window_manager.disconnect(windowHandler);
+        windowHandler = null;
+    }
 }
 
-function draw() {
+function draw(service) {
     Actors.forEach((a) => {
         Main.layoutManager.addChrome(a);
         a.show();
     });
+
+    if (service.CloneWindowRole) {
+        _cloneWindow(service.CloneWindowRole);
+        windowHandler = global.window_manager.connect('map', (wm, actor) => {
+            if (actor && actor.metaWindow)
+                _cloneWindow(service.CloneWindowRole);
+        });
+    }
+}
+
+function _cloneWindow(role) {
+    const [actor] = global.get_window_actors().filter(actor => actor.metaWindow.get_role() === role);
+    if (!actor)
+        return;
+
+    const win = actor.metaWindow;
+    const cloneActor = new Clutter.Clone({
+        source: actor,
+        width: actor.width,
+        height: actor.height,
+        x: actor.x,
+        y: actor.y,
+        reactive: false,
+    });
+
+    const positionHandler = win.connect('position-changed', win => {
+        cloneActor.set_position(actor.x, actor.y);
+    });
+
+    const sizeHandler = win.connect('size-changed', win => {
+        const rect = win.get_frame_rect();
+        cloneActor.set_size(rect.width, rect.height);
+    });
+
+    cloneActor.connect('destroy', () => {
+        win.disconnect(positionHandler);
+        win.disconnect(sizeHandler);
+    });
+
+    Main.layoutManager.addChrome(cloneActor);
+    Actors.push(cloneActor);
 }
 
 function _createActors(x, y, width, height) {
@@ -252,7 +299,6 @@ function _findWidget(root, className) {
     return null;
 }
 
-
 function handleClick(x, y, width, height, service, callback) {
     const monitors = Main.layoutManager.monitors;
     const primary = Main.layoutManager.primaryIndex;
@@ -306,7 +352,7 @@ function rect(x, y, width, height, text, service, callback) {
     }
 
     handleClick(x, y, width, height, service, callback);
-    draw();
+    draw(service);
 
     if (service.Skippable) {
         _reposSkipButton(x, y, width, height, skipButton);
@@ -347,7 +393,7 @@ function circle(x, y, radius, text, service, callback) {
     }
 
     handleClick(x, y, width, width, service, callback);
-    draw();
+    draw(service);
 
     if (service.Skippable) {
         _reposSkipButton(x, y, width, width, skipButton);

@@ -34,6 +34,7 @@ const IFACE = Utils.loadInterfaceXML('com.endlessm.onboarding');
 var Service = class {
     constructor() {
         this._propagateEvents = true;
+        this._cloneWindowRole = '';
         this._skippable = true;
         this._dbusImpl = Gio.DBusExportedObject.wrapJSObject(IFACE, this);
         this._nameId = Gio.bus_own_name_on_connection(Gio.DBus.session, 'com.endlessm.onboarding',
@@ -121,6 +122,15 @@ var Service = class {
     set PropagateEvents(enabled) {
         this._propagateEvents = enabled;
         this._dbusImpl.emit_property_changed('PropagateEvents', new GLib.Variant('b', enabled));
+    }
+
+    get CloneWindowRole() {
+        return this._cloneWindowRole;
+    }
+
+    set CloneWindowRole(role) {
+        this._cloneWindowRole = role;
+        this._dbusImpl.emit_property_changed('CloneWindowRole', new GLib.Variant('s', role));
     }
 };
 

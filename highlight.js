@@ -18,10 +18,10 @@
  * with this program; if not, write to the Free Software Foundation, Inc.,
  * 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
  */
-/* exported rect, circle, widget, icon, clean, fuzzy */
+/* exported rect, circle, widget, icon, clean, fuzzy, image */
 
 const Main = imports.ui.main;
-const { Clutter, Cogl, GObject, Graphene, St } = imports.gi;
+const { Clutter, Cogl, Gio, GObject, Graphene, St } = imports.gi;
 const Cairo = imports.cairo;
 
 const ExtensionUtils = imports.misc.extensionUtils;
@@ -34,6 +34,11 @@ let clickEventHandler = null;
 const overlayColor = new Clutter.Color({red: 0, green: 0, blue: 0, alpha: 200});
 const borderColor = new Clutter.Color({red: 255, green: 120, blue: 0, alpha: 255});
 const border = 3;
+
+// This is from the osd-window margin: in
+// gnome-shell:data/theme/gnome-shell-sass/widgets/_osd.scss
+// > margin: $base_margin * 8; // 32px
+const imageMargin = 32;
 
 function _paintCircle(x, y, radius, area) {
     const cr = area.get_context();
@@ -563,3 +568,56 @@ function fuzzy(position, size, shape, text, service, callback) {
         rect(x, y, width, height, text, service, callback);
     }
 }
+
+function showImage(path, size, text, service, callback) {
+    // background overlay
+    const monitors = Main.layoutManager.monitors;
+    const primary = Main.layoutManager.primaryIndex;
+    const monitor = monitors[primary];
+    const [width, height] = fuzzyParser.parseSize(size);
+
+    let textActor = null;
+    let skipButton = null;
+
+    if (service.Skippable) {
+        skipButton = _createSkipButton(callback);
+        Actors.push(skipButton);
+    }
+
+    if (text) {
+        textActor = _createText(text);
+        Actors.push(textActor);
+    }
+
+    const cache = St.TextureCache.get_default();
+    const scaleFactor = St.ThemeContext.get_for_stage(global.stage).scale_factor;
+
+    const file = Gio.file_new_for_path(path);
+    const actor = cache.load_file_async(file, -1, -1, scaleFactor, 1);
+    actor.set_size(width, height);
+    const container = new St.BoxLayout({
+        style_class: 'osd-window',
+        vertical: true,
+    });
+    container.add_actor(actor);
+
+    actor.connect('notify::allocation', () => {
+        const [w, h] = container.get_size();
+        const x = monitor.x + monitor.width / 2 - w / 2;
+        const y = monitor.y + monitor.height / 2 - h / 2;
+
+        container.set_position(x - imageMargin, y - imageMargin);
+
+        if (service.Skippable) {
+            _reposSkipButton(x, y, w, h, skipButton);
+        }
+
+        if (text) {
+            _reposText(x, y, w, h, textActor);
+        }
+    });
+
+    Actors.push(container);
+    draw();
+}
+

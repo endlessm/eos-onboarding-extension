@@ -98,6 +98,20 @@ function changeProp(prop, value) {
     });
 }
 
+function drawImage(path, size, text) {
+    return new Promise((resolve, reject) => {
+        const variant = new GLib.Variant('(sss)', [path, size, text]);
+        proxy.call('ShowImage', variant, Gio.DBusCallFlags.NONE, 20000, null,
+            (proxy, res) => {
+                const [result] = proxy.call_finish(res).deep_unpack();
+                if (result) {
+                    reject(result);
+                }
+                resolve(result);
+            });
+    });
+}
+
 function testInit() {
     const _loop = new GLib.MainLoop(null, false);
     proxy = new Gio.DBusProxy.new_for_bus_sync(
@@ -108,9 +122,13 @@ function testInit() {
         'com.endlessm.onboarding',
         null);
 
+    const settings = new Gio.Settings({ schema_id: 'org.gnome.desktop.background' });
+    const imagePath = settings.get_string('picture-uri').replace('file://', '');
+
     proxy.call('Overview', new GLib.Variant('(s)', ['show']), Gio.DBusCallFlags.NONE, -1, null, (proxy, res) => {});
     drawRectangle(1920 / 2 - 30, 5, 60, 20)
         .then(drawIcon.bind(this, 'org.gnome.Software', 'The gnome apps store'))
+        .then(drawImage.bind(this, imagePath, '60% 16:9', ''))
         .then(changeProp.bind(this, 'Skippable', false))
         .then(changeProp.bind(this, 'PropagateEvents', false))
         .then(drawCircle.bind(this, 1200, 400, 50))

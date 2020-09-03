@@ -33,6 +33,7 @@ const IFACE = Utils.loadInterfaceXML('com.endlessm.onboarding');
 
 var Service = class {
     constructor() {
+        this._isHighlight = false;
         this._propagateEvents = true;
         this._skippable = true;
         this._dbusImpl = Gio.DBusExportedObject.wrapJSObject(IFACE, this);
@@ -119,6 +120,15 @@ var Service = class {
     set Skippable(enabled) {
         this._skippable = enabled;
         this._dbusImpl.emit_property_changed('Skippable', new GLib.Variant('b', enabled));
+    }
+
+    get IsHighlight() {
+        return this._isHighlight;
+    }
+
+    set IsHighlight(enabled) {
+        this._isHighlight = enabled;
+        this._dbusImpl.emit_property_changed('IsHighlight', new GLib.Variant('b', enabled));
     }
 
     get PropagateEvents() {

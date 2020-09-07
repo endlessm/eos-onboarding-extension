@@ -46,5 +46,6 @@
     <property name="Skippable" type="b" access="readwrite"/>
     <property name="Skip" type="b" access="read"/>
     <property name="PropagateEvents" type="b" access="readwrite"/>
+    <property name="IsHighlight" type="b" access="readwrite"/>
   </interface>
 </node>

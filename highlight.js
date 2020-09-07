@@ -68,7 +68,7 @@ function _paintRect(x, y, x2, y2, area) {
     cr.stroke();
 }
 
-function clean() {
+function clean(service) {
     while(Actors.length) {
         const actor = Actors.pop();
         actor.destroy();
@@ -77,13 +77,16 @@ function clean() {
         global.stage.disconnect(clickEventHandler);
         clickEventHandler = null;
     }
+    service.IsHighlight = false;
 }
 
-function draw() {
+function draw(service) {
     Actors.forEach((a) => {
         Main.layoutManager.addChrome(a);
         a.show();
     });
+
+    service.IsHighlight = true;
 }
 
 function _createActors(x, y, width, height) {
@@ -170,7 +173,7 @@ function _reposSkipButton(x, y, width, height, button) {
     }
 }
 
-function _createSkipButton(callback) {
+function _createSkipButton(callback, service) {
     const button = new St.Button({
         label: 'Skip',
         reactive: true,
@@ -180,7 +183,7 @@ function _createSkipButton(callback) {
     });
 
     button.connect('clicked', () => {
-        clean();
+        clean(service);
         callback(true);
     });
 
@@ -265,7 +268,7 @@ function handleClick(x, y, width, height, service, callback) {
     Actors.push(clickActor);
 
     clickActor.connect('button-press-event', (actor, ev) => {
-        clean();
+        clean(service);
         callback(false);
 
         if (service.PropagateEvents) {
@@ -279,7 +282,7 @@ function handleClick(x, y, width, height, service, callback) {
 }
 
 function rect(x, y, width, height, text, service, callback) {
-    clean();
+    clean(service);
     const b2 = border / 2;
 
     const [topActor, rightActor, bottomActor, leftActor] = _createActors(x, y, width, height);
@@ -301,12 +304,12 @@ function rect(x, y, width, height, text, service, callback) {
 
     let skipButton;
     if (service.Skippable) {
-        skipButton = _createSkipButton(callback);
+        skipButton = _createSkipButton(callback, service);
         Actors.push(skipButton);
     }
 
     handleClick(x, y, width, height, service, callback);
-    draw();
+    draw(service);
 
     if (service.Skippable) {
         _reposSkipButton(x, y, width, height, skipButton);
@@ -318,7 +321,7 @@ function rect(x, y, width, height, text, service, callback) {
 }
 
 function circle(x, y, radius, text, service, callback) {
-    clean();
+    clean(service);
 
     const width = Math.sqrt(2 * radius * radius);
     const width2 = width / 2;
@@ -342,12 +345,12 @@ function circle(x, y, radius, text, service, callback) {
 
     let skipButton;
     if (service.Skippable) {
-        skipButton = _createSkipButton(callback);
+        skipButton = _createSkipButton(callback, service);
         Actors.push(skipButton);
     }
 
     handleClick(x, y, width, width, service, callback);
-    draw();
+    draw(service);
 
     if (service.Skippable) {
         _reposSkipButton(x, y, width, width, skipButton);

@@ -24,6 +24,10 @@ const Main = imports.ui.main;
 const { Clutter, Cogl, GObject, Graphene, St } = imports.gi;
 const Cairo = imports.cairo;
 
+const ExtensionUtils = imports.misc.extensionUtils;
+const Onboarding = ExtensionUtils.getCurrentExtension();
+const _ = Onboarding.imports.utils.gettext;
+
 const Actors = [];
 let clickEventHandler = null;
 
@@ -175,7 +179,7 @@ function _reposSkipButton(x, y, width, height, button) {
 
 function _createSkipButton(callback, service) {
     const button = new St.Button({
-        label: 'Skip',
+        label: _('Skip'),
         reactive: true,
         x: 0,
         y: 0,

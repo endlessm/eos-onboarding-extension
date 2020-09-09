@@ -37,6 +37,13 @@
       <arg type="b" direction="out" name="skipped"/>
     </method>
 
+    <method name="ShowImage">
+      <arg type="s" direction="in" name="path"/>
+      <arg type="s" direction="in" name="size"/>
+      <arg type="s" direction="in" name="text"/>
+      <arg type="b" direction="out" name="skipped"/>
+    </method>
+
     <method name="Overview">
       <arg type="s" direction="in" name="method"/>
     </method>

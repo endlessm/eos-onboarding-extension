@@ -96,6 +96,13 @@ var Service = class {
         });
     }
 
+    ShowImageAsync([path, size, text], invocation) {
+        Highlight.showImage(path, size, text, this, (ret) => {
+            const variant = new GLib.Variant('(b)', [ret]);
+            invocation.return_value(variant);
+        });
+    }
+
     Overview(method) {
         // Overview method, this could be used to show/hide the overview with
         // the toggle method or to show the desktop on EOS with showApps

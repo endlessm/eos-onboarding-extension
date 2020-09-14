@@ -113,7 +113,7 @@ var Service = class {
     }
 
     Clean() {
-        Highlight.clean();
+        Highlight.clean(this);
     }
 
     skip() {

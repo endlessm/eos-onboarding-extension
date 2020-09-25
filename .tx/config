@@ -1,7 +1,7 @@
 [main]
 host = https://www.transifex.com
 
-[onboarding-extension.all]
+[eos-onboarding-extension.all]
 source_file = po/onboarding-extension.pot
 source_lang = en
 file_filter = po/<lang>.po

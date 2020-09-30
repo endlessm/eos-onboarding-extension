@@ -16,7 +16,7 @@ extra_sources = [
 i18n = import('i18n')
 subdir('po')
 
-uuid = 'eos-onboarding@endlessm.com'
+uuid = 'eos-onboarding@endlessos.org'
 
 ver_arr = meson.project_version().split('.')
 if ver_arr[1].to_int().is_even()

@@ -29,7 +29,7 @@ const Onboarding = ExtensionUtils.getCurrentExtension();
 const Utils = Onboarding.imports.utils;
 const Highlight = Onboarding.imports.highlight;
 
-const IFACE = Utils.loadInterfaceXML('com.endlessm.onboarding');
+const IFACE = Utils.loadInterfaceXML('org.endlessos.onboarding');
 
 var Service = class {
     constructor() {
@@ -37,11 +37,11 @@ var Service = class {
         this._propagateEvents = true;
         this._skippable = true;
         this._dbusImpl = Gio.DBusExportedObject.wrapJSObject(IFACE, this);
-        this._nameId = Gio.bus_own_name_on_connection(Gio.DBus.session, 'com.endlessm.onboarding',
+        this._nameId = Gio.bus_own_name_on_connection(Gio.DBus.session, 'org.endlessos.onboarding',
             Gio.BusNameOwnerFlags.REPLACE, null, null);
 
         try {
-            this._dbusImpl.export(Gio.DBus.session, '/com/endlessm/onboarding');
+            this._dbusImpl.export(Gio.DBus.session, '/org/endlessos/onboarding');
         } catch (e) {
             logError(e, 'Cannot export Onboarding service');
             return;

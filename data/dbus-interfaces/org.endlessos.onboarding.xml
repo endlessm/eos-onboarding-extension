@@ -1,5 +1,5 @@
 <node>
-  <interface name="com.endlessm.onboarding">
+  <interface name="org.endlessos.onboarding">
     <method name="HighlightRect">
       <arg type="u" direction="in" name="x"/>
       <arg type="u" direction="in" name="y"/>

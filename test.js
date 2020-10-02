@@ -82,13 +82,13 @@ function changeProp(prop, value) {
     const propProxy = new Gio.DBusProxy.new_for_bus_sync(
         Gio.BusType.SESSION,
         0, null,
-        'com.endlessm.onboarding',
-        '/com/endlessm/onboarding',
+        'org.endlessos.onboarding',
+        '/org/endlessos/onboarding',
         'org.freedesktop.DBus.Properties',
         null);
 
     const variant = new GLib.Variant('(ssv)',
-        ['com.endlessm.onboarding', prop, new GLib.Variant('b', value)]);
+        ['org.endlessos.onboarding', prop, new GLib.Variant('b', value)]);
 
     return new Promise((resolve, reject) => {
         propProxy.call('Set', variant, Gio.DBusCallFlags.NONE, -1, null, (proxy, res) => {
@@ -117,9 +117,9 @@ function testInit() {
     proxy = new Gio.DBusProxy.new_for_bus_sync(
         Gio.BusType.SESSION,
         0, null,
-        'com.endlessm.onboarding',
-        '/com/endlessm/onboarding',
-        'com.endlessm.onboarding',
+        'org.endlessos.onboarding',
+        '/org/endlessos/onboarding',
+        'org.endlessos.onboarding',
         null);
 
     const settings = new Gio.Settings({ schema_id: 'org.gnome.desktop.background' });

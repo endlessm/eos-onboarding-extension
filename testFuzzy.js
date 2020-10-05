@@ -44,9 +44,9 @@ function testInit() {
     proxy = new Gio.DBusProxy.new_for_bus_sync(
         Gio.BusType.SESSION,
         0, null,
-        'com.endlessm.onboarding',
-        '/com/endlessm/onboarding',
-        'com.endlessm.onboarding',
+        'org.endlessos.onboarding',
+        '/org/endlessos/onboarding',
+        'org.endlessos.onboarding',
         null);
 
     drawFuzzy('top left', '20% 10%', 'rect')
